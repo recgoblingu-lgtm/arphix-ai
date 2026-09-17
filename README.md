@@ -28,6 +28,16 @@ npm start
 
 Open `http://127.0.0.1:4173`. The first message works immediately in the deterministic offline mode. A local browser permission prompt appears only if the user presses the voice-record button.
 
+## GitHub Pages
+
+This repository is configured to deploy the `web/` folder automatically through [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml). After GitHub Pages is enabled for the repository, every push to `main` publishes the static website at:
+
+```text
+https://<your-github-username>.github.io/arphix-ai/
+```
+
+The GitHub Pages build is fully client-side. The deterministic rule engine, personalities, intent detection, local browser history, export, and local system speech playback work in the Pages version. GitHub Pages cannot run the optional Node runtime, `llama.cpp`, or `whisper.cpp` endpoints, so the hosted version intentionally falls back to the offline rule engine and explains when local voice transcription is not configured. This preserves the no-external-API contract.
+
 ## Enable actual local generation with llama.cpp
 
 Run a compatible `llama.cpp` server on your own computer. The server must be a loopback URL; ARPHIX rejects any remote hostname. A typical local command is:

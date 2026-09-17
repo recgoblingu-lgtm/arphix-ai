@@ -90,7 +90,7 @@ function render() { renderAgents(); renderHeader(); renderMessages(); updateInte
 async function requestLocalModel(text, agent) {
   const system = `You are ${agent.name}, a ${agent.role}. Personality traits: ${agent.traits.join(', ')}. Be helpful, accurate, and concise. This application is offline-first. Do not claim to browse or call external APIs.`;
   try {
-    const response = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ system, prompt: text }) });
+    const response = await fetch('./api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ system, prompt: text }) });
     if (response.status === 501) return null;
     if (!response.ok) throw new Error((await response.json()).error || 'Local model unavailable');
     const payload = await response.json(); return { content: sanitizeText(payload.content), mode: payload.engine || 'llama.cpp-local' };
@@ -123,7 +123,7 @@ async function toggleVoice() {
 }
 async function uploadRecording() {
   setVoiceUI(false, 'Transcribing locally…'); recordingStream?.getTracks().forEach((track) => track.stop());
-  try { const audio = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' }); const response = await fetch('/api/transcribe', { method: 'POST', headers: { 'Content-Type': audio.type }, body: audio }); const payload = await response.json(); if (!response.ok) throw new Error(payload.setup || payload.error || 'Unable to transcribe locally'); elements.prompt.value = sanitizeText(payload.transcript); updateIntent(elements.prompt.value); setVoiceUI(false, 'Voice ready'); toast('Local transcript added to the draft.'); }
+  try { const audio = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' }); const response = await fetch('./api/transcribe', { method: 'POST', headers: { 'Content-Type': audio.type }, body: audio }); const payload = await response.json(); if (!response.ok) throw new Error(payload.setup || payload.error || 'Unable to transcribe locally'); elements.prompt.value = sanitizeText(payload.transcript); updateIntent(elements.prompt.value); setVoiceUI(false, 'Voice ready'); toast('Local transcript added to the draft.'); }
   catch (error) { setVoiceUI(false, 'Voice setup required'); toast(error.message); }
 }
 

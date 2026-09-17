@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="ARPHIX is an offline-first AI coding and voice assistant maker." />
   <meta name="color-scheme" content="dark" />
-  <link rel="manifest" href="/manifest.webmanifest" />
-  <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/styles.css" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./styles.css" />
   <title>ARPHIX AI — Local Coding Assistant</title>
 </head>
 <body>
@@ -30,6 +30,6 @@
 
   <div class="modal-backdrop" id="agentModal" hidden><form class="modal" id="agentForm"><h2>Create a personality</h2><p>Personality settings shape local response framing. They never leave this browser.</p><div class="modal-grid"><div class="field"><label for="agentName">Name</label><input id="agentName" required maxlength="24" placeholder="e.g. Echo" /></div><div class="field"><label for="agentRole">Role</label><input id="agentRole" required maxlength="42" placeholder="e.g. API Specialist" /></div><div class="field full"><label for="agentTraits">Traits (comma separated)</label><input id="agentTraits" required maxlength="90" placeholder="e.g. curious, concise, rigorous" /></div></div><div class="modal-actions"><button class="secondary" id="cancelAgentBtn" type="button">Cancel</button><button class="primary" type="submit">Create agent</button></div></form></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script type="module" src="/app.js"></script>
+  <script type="module" src="./app.js"></script>
 </body>
 </html>
