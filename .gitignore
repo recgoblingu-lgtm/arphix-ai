@@ -1,0 +1,10 @@
+# Local models and runtime configuration
+models/
+*.gguf
+*.bin
+.env
+
+# Local recordings and development output
+arphix/
+coverage/
+.DS_Store

@@ -1,0 +1,10 @@
+{
+  "name": "ARPHIX AI",
+  "short_name": "ARPHIX",
+  "description": "Offline-first AI coding and voice assistant maker",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#070811",
+  "theme_color": "#070811",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

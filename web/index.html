@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="ARPHIX is an offline-first AI coding and voice assistant maker." />
+  <meta name="color-scheme" content="dark" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/styles.css" />
+  <title>ARPHIX AI — Local Coding Assistant</title>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Assistant navigation">
+      <div class="brand"><div class="mark">A</div><div><h1>ARPHIX</h1><span>LOCAL AI STUDIO</span></div></div>
+      <button class="new-chat" id="newChatBtn" type="button">＋ New conversation</button>
+      <section aria-labelledby="agentsLabel"><p class="eyebrow" id="agentsLabel">Your agents</p><div class="agent-list" id="agentList"></div></section>
+      <div class="sidebar-footer"><span class="privacy-dot"></span><strong>Local-only session</strong><br />History stays in this browser. No telemetry or hosted inference.</div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar"><div class="agent-heading"><div class="avatar" id="activeAvatar">A</div><div><h2 id="activeName">Archi</h2><p id="activeSubtitle">Systems Architect · Methodical, direct, security-minded</p></div></div><span class="mode-pill">● rule engine · offline</span></header>
+      <section class="chat-feed" id="chatFeed" aria-live="polite"><div class="conversation" id="conversation"></div></section>
+      <div class="composer-wrap"><form class="composer" id="composerForm"><textarea id="promptInput" placeholder="Ask ARPHIX to build, debug, explain, or plan…" aria-label="Message ARPHIX" rows="2"></textarea><div class="composer-actions"><div class="left-actions"><button class="icon-button" id="clearInputBtn" title="Clear draft" type="button" aria-label="Clear draft">⌫</button><button class="icon-button" id="voiceBtn" title="Record locally with whisper.cpp runtime" type="button" aria-label="Start local voice recording">●</button><span class="agent-role" id="voiceStatus">Voice ready</span></div><div class="right-actions"><button class="icon-button" id="speakBtn" title="Read latest assistant reply" type="button" aria-label="Read latest assistant reply aloud">♬</button><button class="send" id="sendBtn" title="Send message" type="submit" aria-label="Send message">↑</button></div></div></form></div>
+    </main>
+
+    <aside class="context-panel" aria-label="Session context"><h3>Live context</h3><div class="insight"><label>Detected intent</label><strong id="intentLabel">Conversation</strong><div class="meter"><div id="intentMeter" style="width: 38%"></div></div><span class="agent-role" id="intentConfidence">38% confidence</span></div><div class="insight"><label>Personality blend</label><div class="trait-list" id="traits"></div></div><div class="insight"><label>Session memory</label><strong id="memoryCount">0 messages</strong><p class="status">Saved only to <code>localStorage</code> on this device.</p></div><div class="divider"></div><button class="utility-btn" id="createAgentBtn" type="button">＋ Create personality</button><button class="utility-btn" id="exportBtn" type="button">⇩ Export conversation</button><button class="utility-btn" id="resetBtn" type="button">⌫ Reset local data</button><div class="divider"></div><p class="status"><strong>Privacy contract</strong><br />No external fetches. Voice audio is sent only to the local runtime at <code>127.0.0.1</code> when configured.</p></aside>
+  </div>
+
+  <div class="modal-backdrop" id="agentModal" hidden><form class="modal" id="agentForm"><h2>Create a personality</h2><p>Personality settings shape local response framing. They never leave this browser.</p><div class="modal-grid"><div class="field"><label for="agentName">Name</label><input id="agentName" required maxlength="24" placeholder="e.g. Echo" /></div><div class="field"><label for="agentRole">Role</label><input id="agentRole" required maxlength="42" placeholder="e.g. API Specialist" /></div><div class="field full"><label for="agentTraits">Traits (comma separated)</label><input id="agentTraits" required maxlength="90" placeholder="e.g. curious, concise, rigorous" /></div></div><div class="modal-actions"><button class="secondary" id="cancelAgentBtn" type="button">Cancel</button><button class="primary" type="submit">Create agent</button></div></form></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
