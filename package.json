@@ -5,12 +5,19 @@
   "description": "Offline-first AI coding and voice assistant maker",
   "type": "module",
   "scripts": {
-    "start": "node local-runtime/server.mjs",
+    "start": "npm run build && node local-runtime/server.mjs",
+    "build": "vite build",
     "test": "node --test tests/*.test.mjs",
-    "lint": "node --check web/app.js && node --check web/engine.js && node --check local-runtime/server.mjs"
+    "lint": "node --check web/app.js && node --check web/engine.js && node --check web/local-llm.js && node --check local-runtime/server.mjs && node --check vite.config.js"
   },
   "engines": {
     "node": ">=20"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@huggingface/transformers": "^4.3.0"
+  },
+  "devDependencies": {
+    "vite": "^8.3.0"
+  }
 }

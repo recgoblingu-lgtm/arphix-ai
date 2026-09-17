@@ -27,10 +27,12 @@ jobs:
         uses: actions/configure-pages@v5
         with:
           enablement: true
+      - name: Build browser app
+        run: npm ci && npm run build
       - name: Upload static site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./web
+          path: ./dist
       - name: Deploy to Pages
         id: deployment
         uses: actions/deploy-pages@v4

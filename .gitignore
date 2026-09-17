@@ -4,6 +4,10 @@ models/
 *.bin
 .env
 
+# Generated build and dependency output
+dist/
+node_modules/
+
 # Local recordings and development output
 arphix/
 coverage/

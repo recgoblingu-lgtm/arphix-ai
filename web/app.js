@@ -1,9 +1,11 @@
 import { DEFAULT_PERSONALITIES, APP_VERSION, detectIntent, exportConversation, generateOfflineReply, sanitizeText } from './engine.js';
+import { generateLocalModelReply } from './local-llm.js';
 
 const STORE_KEY = `arphix-state-${APP_VERSION}`;
 const $ = (selector) => document.querySelector(selector);
 const elements = {
   agentList: $('#agentList'), activeAvatar: $('#activeAvatar'), activeName: $('#activeName'), activeSubtitle: $('#activeSubtitle'),
+  modePill: $('#modePill'),
   conversation: $('#conversation'), chatFeed: $('#chatFeed'), prompt: $('#promptInput'), form: $('#composerForm'), send: $('#sendBtn'),
   clearInput: $('#clearInputBtn'), voice: $('#voiceBtn'), voiceStatus: $('#voiceStatus'), speak: $('#speakBtn'),
   intentLabel: $('#intentLabel'), intentMeter: $('#intentMeter'), intentConfidence: $('#intentConfidence'), traits: $('#traits'), memoryCount: $('#memoryCount'),
@@ -90,11 +92,14 @@ function render() { renderAgents(); renderHeader(); renderMessages(); updateInte
 async function requestLocalModel(text, agent) {
   const system = `You are ${agent.name}, a ${agent.role}. Personality traits: ${agent.traits.join(', ')}. Be helpful, accurate, and concise. This application is offline-first. Do not claim to browse or call external APIs.`;
   try {
-    const response = await fetch('./api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ system, prompt: text }) });
-    if (response.status === 501) return null;
-    if (!response.ok) throw new Error((await response.json()).error || 'Local model unavailable');
-    const payload = await response.json(); return { content: sanitizeText(payload.content), mode: payload.engine || 'llama.cpp-local' };
-  } catch (error) { toast(`Local model unavailable; using offline rule engine. ${error.message}`); return null; }
+    const payload = await generateLocalModelReply({ system, prompt: text, onStatus: (status) => { elements.modePill.textContent = `● ${status}`; } });
+    elements.modePill.textContent = `● browser-local · ${payload.backend}`;
+    return { content: sanitizeText(payload.content), mode: payload.mode };
+  } catch (error) {
+    elements.modePill.textContent = '● offline fallback';
+    toast(`Browser-local model unavailable; using the final deterministic fallback. ${error.message}`);
+    return null;
+  }
 }
 async function submitMessage() {
   const text = sanitizeText(elements.prompt.value); if (!text) return;

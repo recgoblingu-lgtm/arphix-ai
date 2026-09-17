@@ -2,7 +2,7 @@
 
 **ARPHIX AI** is a privacy-first, offline-first coding assistant maker. It gives users multiple coding-agent personalities, a ChatGPT-inspired local UI, deterministic intent detection, code scaffolding, local conversation storage, and local voice controls—without a hosted API, analytics SDK, CDN, package install, or database.
 
-> **Honest capability boundary:** The repository runs immediately with a deterministic local rule engine. For genuine on-device generative responses and speech-to-text, connect the supplied local runtime to a locally installed `llama.cpp` server and `whisper.cpp` binary. ARPHIX deliberately does not silently substitute a cloud AI provider.
+> **Inference policy:** ARPHIX now attempts a genuine browser-local language model first with **WebGPU**, retries with **WASM**, and uses the deterministic rule engine only as the final fallback when the model cannot load. No hosted inference API is used by the app.
 
 ## What is included
 
@@ -10,7 +10,7 @@
 |---|---|---|
 | Agent personalities | Create, choose, and retain named coding agents with roles and traits | Stored in browser `localStorage` only |
 | Intent detection | Local rules detect code generation, UI, debugging, explanations, reviews, tests, and planning | Runs in `web/engine.js` |
-| Code assistance | Deterministic implementation templates with personality-aware framing | No requests when fallback is active |
+| Code assistance | Browser-local quantized coding model: WebGPU → WASM → deterministic fallback | Prompts remain in the browser; first model use downloads and caches model files |
 | Local LLM adapter | Optional `llama.cpp` completion proxy on `127.0.0.1` | Runtime rejects non-loopback model URLs |
 | Voice input | Browser recording → local runtime → local `whisper.cpp` | Audio goes only to `/api/transcribe` on the same machine |
 | Voice output | Uses an installed **local** system voice only | Refuses unavailable/nonlocal voices |
@@ -18,7 +18,7 @@
 
 ## Quick start
 
-ARPHIX has **zero npm dependencies**. It serves its own static files and local endpoints with Node.js.
+ARPHIX bundles its browser inference runtime with Vite. The first real-model prompt downloads the configured quantized ONNX model and caches it in the browser. It may be a large first download and requires a browser with WebGPU or WASM support.
 
 ```bash
 git clone <your-GitHub-repository-url>
@@ -26,17 +26,21 @@ cd arphix-ai
 npm start
 ```
 
-Open `http://127.0.0.1:4173`. The first message works immediately in the deterministic offline mode. A local browser permission prompt appears only if the user presses the voice-record button.
+Open `http://127.0.0.1:4173`. On the first prompt, ARPHIX tries WebGPU, then WASM, and visibly reports the active backend. A local browser permission prompt appears only if the user presses the voice-record button.
+
+### Model selection
+
+The default model is `onnx-community/Qwen2.5-Coder-0.5B-Instruct-ONNX`. To use a model mirrored in your own GitHub repository or local static files, set `window.ARPHIX_MODEL_ID` before loading `app.js`, or run `localStorage.setItem('arphix-model-id', 'your-model-id')` in the browser console. For a strict GitHub-only deployment, mirror the model artifacts into GitHub Pages or a GitHub Release and point the model configuration at that mirror. Model licenses and file sizes must be checked before publishing.
 
 ## GitHub Pages
 
-This repository is configured to deploy the `web/` folder automatically through [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml). After GitHub Pages is enabled for the repository, every push to `main` publishes the static website at:
+This repository is configured to bundle and deploy the browser app automatically through [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml). After GitHub Pages is enabled for the repository, every push to `main` publishes the static website at:
 
 ```text
 https://<your-github-username>.github.io/arphix-ai/
 ```
 
-The GitHub Pages build is fully client-side. The deterministic rule engine, personalities, intent detection, local browser history, export, and local system speech playback work in the Pages version. GitHub Pages cannot run the optional Node runtime, `llama.cpp`, or `whisper.cpp` endpoints, so the hosted version intentionally falls back to the offline rule engine and explains when local voice transcription is not configured. This preserves the no-external-API contract.
+The GitHub Pages build is fully client-side. The browser-local model attempts WebGPU first and WASM second. The deterministic engine remains only a last-resort availability fallback. GitHub Pages cannot run the optional Node runtime, `llama.cpp`, or `whisper.cpp` endpoints, so hosted voice transcription still requires a local runtime or a future browser-local speech model.
 
 ## Enable actual local generation with llama.cpp
 
